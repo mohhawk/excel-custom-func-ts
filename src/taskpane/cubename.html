@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Enter Cube Name</title>
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    <style>
+        body { padding: 20px; font-family: 'Segoe UI'; }
+        h3 { margin-top: 0; }
+        #cubeNameInput { width: 200px; padding: 5px; }
+        button { padding: 8px 16px; }
+        button + button { margin-left: 10px; }
+    </style>
+</head>
+<body>
+    <h3>Enter Cube Name</h3>
+    <input type="text" id="cubeNameInput" placeholder="e.g., PLAN1">
+    <br><br>
+    <button onclick="sendCubeName()">OK</button>
+    <button onclick="Office.context.ui.closeContainer()">Cancel</button>
+
+    <script>
+        function sendCubeName() {
+            const cubeName = document.getElementById('cubeNameInput').value;
+            if (cubeName) {
+                Office.context.ui.messageParent(cubeName);
+            } else {
+                alert('Please enter a cube name');
+            }
+        }
+
+        // Focus input on load
+        Office.onReady(() => {
+            document.getElementById('cubeNameInput').focus();
+        });
+
+        // Submit on Enter key
+        document.getElementById('cubeNameInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendCubeName();
+            }
+        });
+    </script>
+</body>
+</html>
