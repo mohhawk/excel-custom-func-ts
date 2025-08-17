@@ -6,43 +6,46 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// Hardcoded EPM configuration
-const EPM_USERNAME = 'itsupport@jirventures.com';
-const EPM_PASSWORD = 'Oracle2025@101p!';
-const EPM_SERVER_URL = 'https://epmconfluence-test-epmconfluence.epm.us-phoenix-1.ocs.oraclecloud.com';
-const EPM_APPLICATION = 'CONFPLAN';
-
 const app = express();
 
 app.use(cors({
-  origin: 'https://localhost:3000'
+  origin: [
+    'https://localhost:3000',
+    // 'https://storage.googleapis.com', 
+    'https://github-jirventures-cube-olap-excel-view-32764122184.us-central1.run.app']
 }));
 
 app.use(express.json());
 
 app.post('/api/exportDataSlice', async (req, res) => {
   try {
-    const { cubeName, payload } = req.body;
-    const url = `${EPM_SERVER_URL}/HyperionPlanning/rest/v3/applications/${EPM_APPLICATION}/plantypes/${cubeName}/exportdataslice`;
+    const { cubeName, payload, settings } = req.body;
+    let url;
+
+    if (settings.connectionType === 'hyperion') {
+      url = `${settings.serverUrl}/HyperionPlanning/rest/v3/applications/${settings.application}/plantypes/${cubeName}/exportdataslice`;
+    } else {
+      url = settings.serverUrl.replace('{cube_name}', cubeName);
+    }
     
     // Debug logging
     console.log('Request:', {
       url,
       cubeName,
       payload,
-      auth: EPM_USERNAME ? 'present' : 'missing'
+      auth: settings.username ? 'present' : 'missing'
     });
 
     console.log('Request headers:', {
       'Content-Type': 'application/json',
-      'Authorization': 'Basic ' + Buffer.from(`${EPM_USERNAME}:${EPM_PASSWORD}`).toString('base64')
+      'Authorization': 'Basic ' + Buffer.from(`${settings.username}:${settings.password}`).toString('base64')
     });
 
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Basic ' + Buffer.from(`${EPM_USERNAME}:${EPM_PASSWORD}`).toString('base64')
+        'Authorization': 'Basic ' + Buffer.from(`${settings.username}:${settings.password}`).toString('base64')
       },
       body: JSON.stringify(payload)
     });
