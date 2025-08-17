@@ -17,7 +17,6 @@ FROM node:18-alpine AS final
 WORKDIR /usr/src/app
 COPY --from=builder /usr/src/app/node_modules ./node_modules
 COPY --from=builder /usr/src/app/server.mjs .
-COPY --from=builder /usr/src/app/.env .
 
 EXPOSE 3001
 CMD ["node", "server.mjs"]
