@@ -11,7 +11,7 @@ const app = express();
 app.use(cors({
   origin: [
     'https://localhost:3000',
-    // 'https://storage.googleapis.com', 
+    'https://storage.googleapis.com', 
     'https://github-jirventures-cube-olap-excel-view-32764122184.us-central1.run.app']
 }));
 
@@ -36,19 +36,21 @@ app.post('/api/exportDataSlice', async (req, res) => {
       auth: settings.username ? 'present' : 'missing'
     });
 
-    console.log('Request headers:', {
-      'Content-Type': 'application/json',
-      'Authorization': 'Basic ' + Buffer.from(`${settings.username}:${settings.password}`).toString('base64')
-    });
+    const fetchOptions = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    };
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Basic ' + Buffer.from(`${settings.username}:${settings.password}`).toString('base64')
-      },
-      body: JSON.stringify(payload)
-    });
+    if (settings.connectionType === 'hyperion') {
+        fetchOptions.headers['Authorization'] = 'Basic ' + Buffer.from(`${settings.username}:${settings.password}`).toString('base64');
+    }
+
+    console.log('Request headers:', fetchOptions.headers);
+
+    const response = await fetch(url, fetchOptions);
 
     if (!response.ok) {
       const errorText = await response.text();
