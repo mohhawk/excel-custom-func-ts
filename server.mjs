@@ -8,15 +8,30 @@ dotenv.config();
 
 const app = express();
 
-const allowedOrigins = [
-  'https://storage.googleapis.com',
-  'http://localhost:3000', // for local development
-];
-
+// Configure CORS to allow requests from Excel add-in origins
 const corsOptions = {
-  origin: allowedOrigins,
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  origin: [
+    'https://storage.googleapis.com',
+    'https://excel.officeapps.live.com',
+    'https://excel.office.com',
+    'https://outlook.office.com',
+    'https://outlook.office365.com',
+    'https://outlook.live.com',
+    'null', // For local development/file:// origins
+    /^https:\/\/.*\.officeapps\.live\.com$/,
+    /^https:\/\/.*\.office\.com$/,
+    /^https?:\/\/localhost:\d+$/ // Match any localhost port
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'Accept',
+    'Origin'
+  ],
+  credentials: true,
+  optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
 app.use(cors(corsOptions));
