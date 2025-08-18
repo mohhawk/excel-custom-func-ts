@@ -2,15 +2,15 @@
 <OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0" xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="TaskPaneApp">
   <Id>28477825-5554-4111-9edf-b1366c316ff9</Id>
   <Version>1.0.0.0</Version>
-  <ProviderName>Contoso</ProviderName>
+  <ProviderName>JIRVentures</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="excel-custom-func-ts"/>
-  <Description DefaultValue="Write your own Excel functions in TypeScript."/>
+  <DisplayName DefaultValue="JIRView Add-in"/>
+  <Description DefaultValue="Connect Your Own OLAP with Excel using JIRView."/>
   <IconUrl DefaultValue="https://localhost:3000/assets/icon-32.png"/>
   <HighResolutionIconUrl DefaultValue="https://localhost:3000/assets/icon-64.png"/>
-  <SupportUrl DefaultValue="https://www.contoso.com/help"/>
+  <SupportUrl DefaultValue="https://www.jirventures.com/contact"/>
   <AppDomains>
-    <AppDomain>https://www.contoso.com</AppDomain>
+    <AppDomain>https://www.jirventures.com</AppDomain>
   </AppDomains>
   <Hosts>
     <Host Name="Workbook"/>
@@ -95,6 +95,22 @@
                     <FunctionName>refreshData</FunctionName>
                   </Action>
                 </Control>
+                <!-- Add Refresh Automatically button -->
+                <Control xsi:type="Button" id="RefreshAutoButton">
+                  <Label resid="RefreshAuto.Label"/>
+                  <Supertip>
+                    <Title resid="RefreshAuto.Label"/>
+                    <Description resid="RefreshAuto.Tooltip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Refresh.16x16"/>
+                    <bt:Image size="32" resid="Refresh.32x32"/>
+                    <bt:Image size="80" resid="Refresh.80x80"/>
+                  </Icon>
+                  <Action xsi:type="ExecuteFunction">
+                    <FunctionName>refresh_auto</FunctionName>
+                  </Action>
+                </Control>
               </Group>
               <Label resid="JIRPortal.Tab.Label"/>
             </CustomTab>
@@ -121,19 +137,21 @@
       </bt:Urls>
       <bt:ShortStrings>
         <!-- Add new string resources -->
-        <bt:String id="Functions.Namespace" DefaultValue="CONTOSO"/>
+        <bt:String id="Functions.Namespace" DefaultValue="JIRVIEW"/>
         <bt:String id="GetStarted.Title" DefaultValue="Get started with your sample add-in!"/>
         <bt:String id="CommandsGroup.Label" DefaultValue="Commands Group"/>
         <bt:String id="TaskpaneButton.Label" DefaultValue="Show Task Pane"/>
-        <bt:String id="JIRPortal.Tab.Label" DefaultValue="JIR Portal"/>
+        <bt:String id="JIRPortal.Tab.Label" DefaultValue="JIRView"/>
         <bt:String id="JIRPortal.Group.Label" DefaultValue="Data Operations"/>
         <bt:String id="RefreshData.Label" DefaultValue="Refresh Data"/>
+        <bt:String id="RefreshAuto.Label" DefaultValue="Refresh Automatically"/>
       </bt:ShortStrings>
       <bt:LongStrings>
         <!-- Add new tooltip -->
-        <bt:String id="GetStarted.Description" DefaultValue="Your sample add-in loaded successfully. Go to the HOME tab and click the 'Show Task Pane' button to get started."/>
+        <bt:String id="GetStarted.Description" DefaultValue="JIRView add-in loaded successfully. Go to the JIRView tab and click the 'Show Task Pane' button to get started."/>
         <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Click to Show a Task Pane"/>
         <bt:String id="RefreshData.Tooltip" DefaultValue="Refresh data from the selected range"/>
+        <bt:String id="RefreshAuto.Tooltip" DefaultValue="Automatically refresh data by detecting the range and metadata"/>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>

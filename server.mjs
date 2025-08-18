@@ -8,12 +8,7 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors({
-  origin: [
-    'https://localhost:3000',
-    'https://storage.googleapis.com', 
-    'https://github-jirventures-cube-olap-excel-view-32764122184.us-central1.run.app']
-}));
+app.use(cors());
 
 app.use(express.json());
 

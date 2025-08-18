@@ -8,8 +8,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="Permissions-Policy" content="storage-access=*, cross-origin-isolated=*">
-    <title>Contoso Task Pane Add-in</title>
+    <title>JIRView Taskpane</title>
 
     <!-- Office JavaScript API -->
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
@@ -23,180 +22,67 @@
 
 <body class="ms-font-m ms-welcome ms-Fabric">
     <header class="ms-welcome__header ms-bgColor-neutralLighter">
-        <h1 class="ms-font-su">JIR Olap Portal</h1>
-        <img width="90" height="90" src="../../assets/logo-filled.png" alt="Contoso" title="Contoso" />
+        <img width="90" height="90" src="../../assets/logo-filled.png" alt="JIRView" title="JIRView" />
+        <h1 class="ms-font-su">Welcome to JIR View</h1>
     </header>
     <section id="sideload-msg" class="ms-welcome__main">
         <h2 class="ms-font-xl">Please <a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/office/dev/add-ins/testing/test-debug-office-add-ins#sideload-an-office-add-in-for-testing">sideload</a> your add-in to see app body.</h2>
     </section>
     <main id="app-body" class="ms-welcome__main">
-        <!-- Authentication Section -->
-        <div id="auth-section">
-            
-            <!-- Login Form -->
-            <div id="login-form" class="ms-form-group">
-                <h3 class="ms-font-l">Login</h3>
-                <label class="ms-Label">Email</label>
-                <input type="email" id="auth-email" class="ms-TextField-field" placeholder="Enter your email">
-                
-                <label class="ms-Label">Password</label>
-                <input type="password" id="auth-password" class="ms-TextField-field" placeholder="Enter your password">
-                
-                <button id="login-btn" class="ms-Button ms-Button--primary">
-                    <span class="ms-Button-label">Login</span>
-                </button>
-                
-                <button id="show-register-btn" class="ms-Button">
-                    <span class="ms-Button-label">Need an account? Register</span>
-                </button>
-            </div>
-            
-            <!-- Registration Form -->
-            <div id="register-form" class="ms-form-group hidden">
-                <h3 class="ms-font-l">Register</h3>
-                <label class="ms-Label">First Name</label>
-                <input type="text" id="register-first-name" class="ms-TextField-field" placeholder="Enter your first name">
-                
-                <label class="ms-Label">Last Name</label>
-                <input type="text" id="register-last-name" class="ms-TextField-field" placeholder="Enter your last name">
-                
-                <label class="ms-Label">Email</label>
-                <input type="email" id="register-email" class="ms-TextField-field" placeholder="Enter your email">
-                
-                <label class="ms-Label">Password</label>
-                <input type="password" id="register-password" class="ms-TextField-field" placeholder="Enter your password (min 6 characters)">
-                
-                <label class="ms-Label">Confirm Password</label>
-                <input type="password" id="register-confirm-password" class="ms-TextField-field" placeholder="Confirm your password">
-                
-                <button id="register-btn" class="ms-Button ms-Button--primary">
-                    <span class="ms-Button-label">Register</span>
-                </button>
-                
-                <button id="show-login-btn" class="ms-Button">
-                    <span class="ms-Button-label">Already have an account? Login</span>
-                </button>
-            </div>
-            
-            <div id="auth-status" class="ms-MessageBar hidden">
-                <span class="ms-MessageBar-text"></span>
-            </div>
-            
-            <div id="user-info" class="ms-form-group hidden">
-                <h3 class="ms-font-l">Welcome, <span id="username-display"></span></h3>
-                <p class="ms-font-s">Email: <span id="user-email"></span></p>
-                <p class="ms-font-s">Email Verified: <span id="email-verified"></span></p>
-                <p class="ms-font-m">Credits: <span id="credit-balance">0</span></p>
-                <button id="logout-btn" class="ms-Button">
-                    <span class="ms-Button-label">Logout</span>
-                </button>
-                <button id="refresh-user-info" class="ms-Button">
-                    <span class="ms-Button-label">Refresh Info</span>
-                </button>
-            </div>
+        <h2 class="ms-font-xl">EPM Connection Settings</h2>
+        <div class="ms-form-group">
+            <label for="connection-type" class="ms-Label">Connection Type</label>
+            <select id="connection-type" class="ms-TextField-field">
+                <option value="hyperion">Hyperion</option>
+                <option value="tinyolap">Tiny Olap</option>
+            </select>
         </div>
-
-        <!-- OLAP Connection Settings -->
-        <div id="olap-section" class="hidden">
-            <h2 class="ms-font-xl">OLAP Connection Settings</h2>
-            <div class="ms-form-group">
-                <label class="ms-Label">Connection Name</label>
-                <input type="text" id="connection-name" class="ms-TextField-field" placeholder="My OLAP Connection">
-                
-                <label class="ms-Label" for="olap-type">OLAP Type</label>
-                <select id="olap-type" class="ms-TextField-field" aria-label="OLAP Type" title="Select OLAP Type">
-                    <option value="hyperion">Oracle Hyperion Planning</option>
-                    <option value="ssas">SQL Server Analysis Services</option>
-                    <option value="tm1">IBM TM1</option>
-                    <option value="jedox">Jedox</option>
-                </select>
-                
-                <label class="ms-Label">Server URL</label>
-                <input type="text" id="server-url" class="ms-TextField-field" placeholder="https://your-epm-server.com">
-                
-                <label class="ms-Label">Application Name</label>
-                <input type="text" id="application" class="ms-TextField-field" placeholder="e.g., CONFPLAN">
-                
-                <label class="ms-Label">OLAP Username</label>
-                <input type="text" id="olap-username" class="ms-TextField-field" placeholder="username@example.com">
-                
-                <label class="ms-Label">OLAP Password</label>
-                <input type="password" id="olap-password" class="ms-TextField-field" placeholder="Enter OLAP password">
-                
-                <button id="save-connection" class="ms-Button ms-Button--primary">
-                    <span class="ms-Button-label">Save Connection</span>
-                </button>
-            </div>
+        <div id="hyperion-fields">
+            <label class="ms-Label">Server URL</label>
+            <input type="text" id="server-url" class="ms-TextField-field" placeholder="https://your-epm-server.com">
             
-            <div id="connection-status" class="ms-MessageBar hidden">
-                <span class="ms-MessageBar-text"></span>
-            </div>
+            <label class="ms-Label">Application Name</label>
+            <input type="text" id="application" class="ms-TextField-field" placeholder="e.g., CONFPLAN">
             
-            <!-- Saved Connections -->
-            <div id="saved-connections">
-                <h3 class="ms-font-l">Saved Connections</h3>
-                <div id="connections-list"></div>
-            </div>
+            <label class="ms-Label">Username</label>
+            <input type="text" id="username" class="ms-TextField-field" placeholder="username@example.com">
+            
+            <label class="ms-Label">Password</label>
+            <input type="password" id="password" class="ms-TextField-field" placeholder="Enter password">
         </div>
-
-        <!-- Data Operations -->
-        <div id="operations-section" class="hidden">
-            <h2 class="ms-font-xl">Data Operations</h2>
+        <div id="tinyolap-fields" class="hidden">
+            <label class="ms-Label">Server URL</label>
+            <input type="text" id="tinyolap-server-url" class="ms-TextField-field" placeholder="https://your-tinyolap-server.com">
             
-            <!-- Preprocessing Settings -->
-            <div class="ms-form-group">
-                <h3 class="ms-font-l">Preprocessing Settings</h3>
-                <label class="ms-Label">Max Cells Per Chunk</label>
-                <input type="number" id="max-cells-chunk" class="ms-TextField-field" value="10000" min="1000" max="50000" title="Enter max cells per chunk">
-                
-                <label class="ms-Label" for="max-payload-size">Max Payload Size (MB)</label>
-                <input type="number" id="max-payload-size" class="ms-TextField-field" value="1" min="0.1" max="10" step="0.1" placeholder="Enter max payload size" title="Enter max payload size">
-                <div class="ms-CheckBox">
-                    <input type="checkbox" id="chunk-by-dimension" checked>
-                    <label for="chunk-by-dimension">Chunk by Dimension</label>
-                </div>
-            </div>
-            
-            <!-- Refresh Operations -->
-            <div class="ms-form-group">
-                <h3 class="ms-font-l">Refresh Data</h3>
-                <label class="ms-Label" for="active-connection">Active Connection</label>
-                <select id="active-connection" class="ms-TextField-field" title="Select an active connection">
-                    <option value="">Select a connection...</option>
-                </select>
-                
-                <button id="refresh-data" class="ms-Button ms-Button--primary">
-                    <span class="ms-Button-label">Refresh Selected Data</span>
-                </button>
-                
-                <button id="estimate-cost" class="ms-Button">
-                    <span class="ms-Button-label">Estimate Cost</span>
-                </button>
-            </div>
-            
-            <!-- Progress Tracking -->
-            <div id="progress-section" class="hidden">
-                <h3 class="ms-font-l">Operation Progress</h3>
-                <div class="ms-ProgressIndicator">
-                    <div class="ms-ProgressIndicator-itemName">Processing chunks...</div>
-                    <div class="ms-ProgressIndicator-itemProgress">
-                        <div class="ms-ProgressIndicator-progressTrack">
-                            <div id="progress-bar" class="ms-ProgressIndicator-progressBar progress-0"></div>
-                        </div>
-                    </div>
-                    <div class="ms-ProgressIndicator-itemDescription">
-                        <span id="progress-text">0 of 0 chunks completed</span>
-                    </div>
-                </div>
-                <button id="cancel-operation" class="ms-Button ms-Button--default">
-                    <span class="ms-Button-label">Cancel</span>
-                </button>
-            </div>
+            <label class="ms-Label">Application Name</label>
+            <input type="text" id="tinyolap-application" class="ms-TextField-field" placeholder="e.g., CONFPLAN">
         </div>
-        
-        <!-- Notification Area -->
-        <div id="notification-area"></div>
+        <div class="ms-form-group">
+            <button id="save-settings" class="ms-Button ms-Button--primary">
+                <span class="ms-Button-label">Save Settings</span>
+            </button>
+        </div>
+        <div id="settings-status" class="ms-MessageBar ms-MessageBar--success hidden">
+            <span class="ms-MessageBar-text">Settings saved successfully!</span>
+        </div>
+        <p><label id="item-subject"></label></p>
+        <button id="refresh-data" class="ms-Button ms-Button--primary">
+            <span class="ms-Button-label">Refresh Selected Data</span>
+        </button>
+        <button id="refresh-auto" class="ms-Button ms-Button--primary">
+            <span class="ms-Button-label">Refresh Automatically</span>
+        </button>
     </main>
+    <script>
+  document.getElementById("refresh-auto").addEventListener("click", async () => {
+    try {
+      const result = await refresh_auto("main");
+      console.log(result);
+    } catch (error) {
+      console.error("Error calling refresh_auto:", error);
+    }
+  });
+</script>
 </body>
 
 </html>

@@ -18,4 +18,7 @@ timeout /t 2 /nobreak
 echo Starting npm...
 start cmd /c "npm start"
 
+echo Starting Node server...
+start cmd /c "node server.mjs"
+
 echo Done! Please reopen Excel and your workbook.
