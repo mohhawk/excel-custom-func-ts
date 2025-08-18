@@ -15,7 +15,8 @@ COPY . .
 # Stage 3: Production image
 FROM node:18-alpine AS final
 WORKDIR /usr/src/app
-COPY --from=builder /usr/src/app/node_modules ./node_modules
+COPY --from=builder /usr/src/app/dist .
+COPY --from=builder /usr/src/app/package.json .
 COPY --from=builder /usr/src/app/server.mjs .
 
 EXPOSE 3001
