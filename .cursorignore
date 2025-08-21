@@ -1,4 +1,3 @@
-# Ignore all folders in the root, but keep 'src' and all root files.
 dist/
 .history/
 smaples/

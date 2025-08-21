@@ -10,41 +10,59 @@ import {
   isDevEnvironment
 } from '../utils/config';
 import { getApiUrl } from '../utils/url';
-import { detectDataStructure } from '../functions/functions';
+// import { detectDataStructure } from '../functions/functions';
 import { exportDataSlice } from '../utils/api-client';
 
 interface EPMSettings {
-  connectionType: 'hyperion' | 'tinyolap';
+  connectionType: 'hyperion' | 'olapcube';
   serverUrl: string;
   application: string;
   username?: string;
   password?: string;
-  tinyOlapServerUrl?: string;
-  tinyOlapApplication?: string;
+  olapCubeServerUrl?: string;
+  olapCubeApplication?: string;
 }
 
 // The initialize function must be run each time a new page is loaded
 Office.onReady(() => {
-  document.getElementById("sideload-msg").style.display = "none";
-  document.getElementById("app-body").style.display = "flex";
-  
+  document.getElementById("app-body")!.style.display = "flex";
+
   // Load saved settings
   loadSavedSettings();
-  
+
   // Add event listeners
-  document.getElementById("save-settings").onclick = saveSettings;
-  document.getElementById("refresh-data").onclick = () => refreshAdhocData('main');
-  document.getElementById('connection-type').addEventListener('change', toggleConnectionFields);
+  document.getElementById("save-settings")!.onclick = saveSettings;
+  document.getElementById('hyperion-btn')!.addEventListener('click', () => selectConnectionType('hyperion'));
+  document.getElementById('olapcube-btn')!.addEventListener('click', () => selectConnectionType('olapcube'));
+
+  // Initial field visibility
+  toggleConnectionFields();
 });
 
-function toggleConnectionFields() {
-  const connectionType = (document.getElementById('connection-type') as HTMLSelectElement).value;
-  if (connectionType === 'hyperion') {
-    document.getElementById('hyperion-fields').classList.remove('hidden');
-    document.getElementById('tinyolap-fields').classList.add('hidden');
+function selectConnectionType(type: 'hyperion' | 'olapcube') {
+  const hyperionBtn = document.getElementById('hyperion-btn')!;
+  const olapcubeBtn = document.getElementById('olapcube-btn')!;
+
+  if (type === 'hyperion') {
+    hyperionBtn.classList.add('active');
+    olapcubeBtn.classList.remove('active');
   } else {
-    document.getElementById('hyperion-fields').classList.add('hidden');
-    document.getElementById('tinyolap-fields').classList.remove('hidden');
+    olapcubeBtn.classList.add('active');
+    hyperionBtn.classList.remove('active');
+  }
+  toggleConnectionFields();
+}
+
+function toggleConnectionFields() {
+  const hyperionBtn = document.getElementById('hyperion-btn')!;
+  const isHyperion = hyperionBtn.classList.contains('active');
+
+  if (isHyperion) {
+    document.getElementById('hyperion-fields')!.classList.remove('hidden');
+    document.getElementById('olapcube-fields')!.classList.add('hidden');
+  } else {
+    document.getElementById('hyperion-fields')!.classList.add('hidden');
+    document.getElementById('olapcube-fields')!.classList.remove('hidden');
   }
 }
 
@@ -52,31 +70,45 @@ function loadSavedSettings() {
   const savedSettings = localStorage.getItem('epmSettings');
   if (savedSettings) {
     const settings: EPMSettings = JSON.parse(savedSettings);
-    (document.getElementById('connection-type') as HTMLSelectElement).value = settings.connectionType || 'hyperion';
+    selectConnectionType(settings.connectionType || 'hyperion');
     (document.getElementById('server-url') as HTMLInputElement).value = settings.serverUrl || '';
     (document.getElementById('application') as HTMLInputElement).value = settings.application || '';
     (document.getElementById('username') as HTMLInputElement).value = settings.username || '';
     (document.getElementById('password') as HTMLInputElement).value = settings.password || '';
-    (document.getElementById('tinyolap-server-url') as HTMLInputElement).value = settings.tinyOlapServerUrl || '';
-    (document.getElementById('tinyolap-application') as HTMLInputElement).value = settings.tinyOlapApplication || '';
+    (document.getElementById('olapcube-server-url') as HTMLInputElement).value = settings.olapCubeServerUrl || '';
+    (document.getElementById('olapcube-application') as HTMLInputElement).value = settings.olapCubeApplication || '';
     toggleConnectionFields();
   }
 }
 
+function trimUrlToDomain(url: string): string {
+  if (!url) return "";
+  try {
+    const urlObject = new URL(url);
+    return `${urlObject.protocol}//${urlObject.hostname}`;
+  } catch (error) {
+    console.error("Invalid URL:", url);
+    return url; // Return original url if parsing fails
+  }
+}
+
 function saveSettings() {
-  const connectionType = (document.getElementById('connection-type') as HTMLSelectElement).value as 'hyperion' | 'tinyolap';
-  
+  const connectionType = document.querySelector('.connection-type-btn.active')?.getAttribute('data-type') as 'hyperion' | 'olapcube';
+
+  const serverUrl = (document.getElementById('server-url') as HTMLInputElement).value;
+  const olapCubeServerUrl = (document.getElementById('olapcube-server-url') as HTMLInputElement).value;
+
   const settings: EPMSettings = {
     connectionType,
-    serverUrl: (document.getElementById('server-url') as HTMLInputElement).value,
+    serverUrl: trimUrlToDomain(serverUrl),
     application: (document.getElementById('application') as HTMLInputElement).value,
     username: (document.getElementById('username') as HTMLInputElement).value,
     password: (document.getElementById('password') as HTMLInputElement).value,
-    tinyOlapServerUrl: (document.getElementById('tinyolap-server-url') as HTMLInputElement).value,
-    tinyOlapApplication: (document.getElementById('tinyolap-application') as HTMLInputElement).value,
+    olapCubeServerUrl: trimUrlToDomain(olapCubeServerUrl),
+    olapCubeApplication: (document.getElementById('olapcube-application') as HTMLInputElement).value,
   };
 
-  if (connectionType === 'tinyolap') {
+  if (connectionType === 'olapcube') {
     settings.username = '';
     settings.password = '';
   }
@@ -86,9 +118,9 @@ function saveSettings() {
 
   // Show success message
   const statusElement = document.getElementById('settings-status');
-  statusElement.classList.remove('hidden');
+  statusElement!.classList.remove('hidden');
   setTimeout(() => {
-    statusElement.classList.add('hidden');
+    statusElement!.classList.add('hidden');
   }, 3000);
 }
 
@@ -100,8 +132,8 @@ export function getEPMSettings(): EPMSettings {
   }
   const settings: EPMSettings = JSON.parse(savedSettings);
 
-  if (settings.connectionType === 'tinyolap') {
-    settings.serverUrl = `${settings.tinyOlapServerUrl}/api/v1/app/${settings.tinyOlapApplication}/cube/{cube_name}/slice/`;
+  if (settings.connectionType === 'olapcube') {
+    settings.serverUrl = `${settings.olapCubeServerUrl}/api/v1/app/${settings.olapCubeApplication}/cube/{cube_name}/slice/`;
   }
   
   return settings;
@@ -122,7 +154,7 @@ function showNotification(message: string, isError: boolean = false) {
     
     // Insert after the refresh button
     const refreshButton = document.getElementById('refresh-data');
-    refreshButton.parentNode.insertBefore(notificationElement, refreshButton.nextSibling);
+    refreshButton!.parentNode!.insertBefore(notificationElement, refreshButton!.nextSibling);
   }
   
   // Update classes and content
@@ -139,113 +171,113 @@ function showNotification(message: string, isError: boolean = false) {
   }, 5000);
 }
 
-export async function refreshAdhocData(cubeName?: string) {
-  try {
-    showNotification('Refreshing data...', false);
+// export async function refreshAdhocData(cubeName?: string) {
+//   try {
+//     showNotification('Refreshing data...', false);
     
-    await Excel.run(async (context) => {
-      const selectedRange = context.workbook.getSelectedRange();
-      selectedRange.load(["values", "address"]);
-      await context.sync();
+//     await Excel.run(async (context) => {
+//       const selectedRange = context.workbook.getSelectedRange();
+//       selectedRange.load(["values", "address"]);
+//       await context.sync();
 
-      const range = selectedRange.values as string[][];
+//       const range = selectedRange.values as string[][];
       
-      const dataStructure = detectDataStructure(range);
+//       const dataStructure = detectDataStructure(range);
 
-      // Create the payload structure
-      const payload: any = {
-        exportPlanningData: false,
-        gridDefinition: {
-          suppressMissingBlocks: false,
-          columns: [{ members: dataStructure.columnLayers }],
-          rows: [{ members: dataStructure.rowMembersTransposed }]
-        }
-      };
+//       // Create the payload structure
+//       const payload: any = {
+//         exportPlanningData: false,
+//         gridDefinition: {
+//           suppressMissingBlocks: false,
+//           columns: [{ members: dataStructure.columnLayers }],
+//           rows: [{ members: dataStructure.rowMembersTransposed }]
+//         }
+//       };
       
-      if (dataStructure.povMembers.length > 0) {
-        payload.gridDefinition.pov = {
-          members: dataStructure.povMembers
-        };
-      }
+//       if (dataStructure.povMembers.length > 0) {
+//         payload.gridDefinition.pov = {
+//           members: dataStructure.povMembers
+//         };
+//       }
 
 
-      // Make API call
-      const data = await exportDataSlice(cubeName || 'main', payload);
+//       // Make API call
+//       const data = await exportDataSlice(cubeName || 'main', payload);
       
-      console.log('Payload Sent:', JSON.stringify(payload, null, 2));
-      console.log('Server Response:', JSON.stringify(data, null, 2));
+//       console.log('Payload Sent:', JSON.stringify(payload, null, 2));
+//       console.log('Server Response:', JSON.stringify(data, null, 2));
 
-      // Map response data back to Excel
-      if (data.rows && data.rows.length > 0) {
-        // Create a lookup map from the response data for easy access
-        const responseMap = new Map<string, string[]>();
-        data.rows.forEach((row: any) => {
-          const key = row.headers.join('|').toLowerCase(); // Normalize to lowercase
-          responseMap.set(key, row.data);
-        });
+//       // Map response data back to Excel
+//       if (data.rows && data.rows.length > 0) {
+//         // Create a lookup map from the response data for easy access
+//         const responseMap = new Map<string, string[]>();
+//         data.rows.forEach((row: any) => {
+//           const key = row.headers.join('|').toLowerCase(); // Normalize to lowercase
+//           responseMap.set(key, row.data);
+//         });
 
-        // Log the keys from the response map for debugging
-        console.log("Keys from response map:", Array.from(responseMap.keys()));
+//         // Log the keys from the response map for debugging
+//         console.log("Keys from response map:", Array.from(responseMap.keys()));
 
-        // Create the data matrix for Excel, mapping response data to the correct grid location
-        const dataMatrix: (string | number)[][] = [];
+//         // Create the data matrix for Excel, mapping response data to the correct grid location
+//         const dataMatrix: (string | number)[][] = [];
         
-        // Get the original data rows from the Excel grid to match against the response
-        const excelDataRows = dataStructure.rowMembersTransposed[0].map((_, colIndex) => 
-          dataStructure.rowMembersTransposed.map(row => row[colIndex])
-        );
+//         // Get the original data rows from the Excel grid to match against the response
+//         const excelDataRows = dataStructure.rowMembersTransposed[0].map((_, colIndex) => 
+//           dataStructure.rowMembersTransposed.map(row => row[colIndex])
+//         );
         
-        excelDataRows.forEach(rowMembers => {
-          const key = rowMembers.join('|').toLowerCase(); // Normalize to lowercase
-          const responseData = responseMap.get(key);
+//         excelDataRows.forEach(rowMembers => {
+//           const key = rowMembers.join('|').toLowerCase(); // Normalize to lowercase
+//           const responseData = responseMap.get(key);
           
-          // Log the key being looked up for debugging
-          console.log(`Looking up key: ${key}, Found: ${!!responseData}`);
+//           // Log the key being looked up for debugging
+//           console.log(`Looking up key: ${key}, Found: ${!!responseData}`);
 
-          if (responseData) {
-            const rowData: (string | number)[] = responseData.map((value: string | null | undefined) => {
-                if (value === null || value === undefined || value.trim() === "") {
-                    return "#MISSING_BLOCK";
-                }
-                const numValue = Number(value);
-                return isNaN(numValue) ? value : numValue;
-            });
-            dataMatrix.push(rowData);
-          } else {
-            // If no data for this row combination, fill with #MISSING_BLOCK
-            const placeholderRow = new Array(dataStructure.columnLayers[0].length).fill("#MISSING_BLOCK");
-            dataMatrix.push(placeholderRow);
-          }
-        });
+//           if (responseData) {
+//             const rowData: (string | number)[] = responseData.map((value: string | null | undefined) => {
+//                 if (value === null || value === undefined || value.trim() === "") {
+//                     return "#MISSING_BLOCK";
+//                 }
+//                 const numValue = Number(value);
+//                 return isNaN(numValue) ? value : numValue;
+//             });
+//             dataMatrix.push(rowData);
+//           } else {
+//             // If no data for this row combination, fill with #MISSING_BLOCK
+//             const placeholderRow = new Array(dataStructure.columnLayers[0].length).fill("#MISSING_BLOCK");
+//             dataMatrix.push(placeholderRow);
+//           }
+//         });
 
-        // Calculate the range where data should be populated
-        // Data starts at firstDataRow and firstHeaderCol
-        const numDataRows = dataMatrix.length;
-        const numDataCols = dataMatrix[0].length;
+//         // Calculate the range where data should be populated
+//         // Data starts at firstDataRow and firstHeaderCol
+//         const numDataRows = dataMatrix.length;
+//         const numDataCols = dataMatrix[0].length;
         
-        // Get the data range and populate it
-        const dataRange = selectedRange.getCell(dataStructure.rowIndices[0], dataStructure.colIndices[0])
-          .getResizedRange(numDataRows - 1, numDataCols - 1);
+//         // Get the data range and populate it
+//         const dataRange = selectedRange.getCell(dataStructure.rowIndices[0], dataStructure.colIndices[0])
+//           .getResizedRange(numDataRows - 1, numDataCols - 1);
         
-        dataRange.values = dataMatrix;
+//         dataRange.values = dataMatrix;
         
-        await context.sync();
-        console.log("Data refreshed successfully");
+//         await context.sync();
+//         console.log("Data refreshed successfully");
         
-        // Show success notification
-        showNotification('Data refreshed successfully!', false);
-      } else {
-        throw new Error("No data received from server");
-      }
-    });
-  } catch (error) {
-    console.error("Error refreshing data:", error);
-    // Show error notification
-    showNotification(`Error: ${error.message}`, true);
-  }
-}
+//         // Show success notification
+//         showNotification('Data refreshed successfully!', false);
+//       } else {
+//         throw new Error("No data received from server");
+//       }
+//     });
+//   } catch (error) {
+//     console.error("Error refreshing data:", error);
+//     // Show error notification
+//     showNotification(`Error: ${error.message}`, true);
+//   }
+// }
 
-import { refresh_auto } from '../functions/functions';
+// import { refresh_auto } from '../functions/functions';
 
-// Attach to window so it can be called from HTML
-(window as any).refresh_auto = refresh_auto;
+// // Attach to window so it can be called from HTML
+// (window as any).refresh_auto = refresh_auto;

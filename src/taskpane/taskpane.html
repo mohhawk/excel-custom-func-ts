@@ -22,58 +22,66 @@
 
 <body class="ms-font-m ms-welcome ms-Fabric">
     <header class="ms-welcome__header ms-bgColor-neutralLighter">
-        <img width="90" height="90" src="../../assets/logo-filled.png" alt="JIRView" title="JIRView" />
-        <h1 class="ms-font-su">Welcome to JIR View</h1>
+        <div class="logo-container">
+            <img width="90" height="90" src="../../assets/logo-filled.png" alt="JIRView" title="JIRView" />
+        </div>
+        <h1 class="ms-font-su">Welcome to JIRView</h1>
     </header>
-    <section id="sideload-msg" class="ms-welcome__main">
-        <h2 class="ms-font-xl">Please <a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/office/dev/add-ins/testing/test-debug-office-add-ins#sideload-an-office-add-in-for-testing">sideload</a> your add-in to see app body.</h2>
-    </section>
     <main id="app-body" class="ms-welcome__main">
-        <h2 class="ms-font-xl">EPM Connection Settings</h2>
-        <div class="ms-form-group">
-            <label for="connection-type" class="ms-Label">Connection Type</label>
-            <select id="connection-type" class="ms-TextField-field">
-                <option value="hyperion">Hyperion</option>
-                <option value="tinyolap">Tiny Olap</option>
-            </select>
+        <div class="form-container">
+            <h2 class="ms-font-xl">EPM Connection Settings</h2>
+            <div class="form-group">
+                <label for="connection-type" class="ms-Label">Connection Type</label>
+                <div class="connection-type-selector">
+                    <button id="hyperion-btn" class="connection-type-btn active" data-type="hyperion">
+                        <h5>Oracle Hyperion</h5>
+                        <p></p>
+                    </button>
+                    <button id="olapcube-btn" class="connection-type-btn" data-type="olapcube">
+                        <h5>Olap Cube</h5>
+                        <p> </p>
+                    </button>
+                </div>
+            </div>
+            <div id="hyperion-fields" class="connection-fields">
+                <div class="form-group">
+                    <label for="server-url">Server URL*</label>
+                    <input type="text" id="server-url" class="ms-TextField-field" placeholder="Enter your primary Oracle Hyperion URL">
+                </div>
+                <div class="form-group">
+                    <label for="application">Application Name*</label>
+                    <input type="text" id="application" class="ms-TextField-field" placeholder="Enter application name">
+                </div>
+                <div class="form-group">
+                    <label for="username">Email*</label>
+                    <input type="text" id="username" class="ms-TextField-field" placeholder="Enter your Oracle Hyperion email">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password*</label>
+                    <input type="password" id="password" class="ms-TextField-field" placeholder="Enter your Oracle Hyperion password">
+                </div>
+            </div>
+            <div id="olapcube-fields" class="connection-fields hidden">
+                <div class="form-group">
+                    <label for="olapcube-server-url">Server URL*</label>
+                    <input type="text" id="olapcube-server-url" class="ms-TextField-field" placeholder="Enter your Olap Cube URL">
+                </div>
+                <div class="form-group">
+                    <label for="olapcube-application">Application Name*</label>
+                    <input type="text" id="olapcube-application" class="ms-TextField-field" placeholder="Enter application name">
+                </div>
+            </div>
+            <div id="settings-status" class="ms-MessageBar ms-MessageBar--success hidden">
+                <span class="ms-MessageBar-text">Settings saved successfully!</span>
+            </div>
+            <div class="form-group">
+                <button id="save-settings" class="ms-Button ms-Button--primary">
+                    <span class="ms-Button-label">Save Settings</span>
+                </button>
+            </div>
         </div>
-        <div id="hyperion-fields">
-            <label class="ms-Label">Server URL</label>
-            <input type="text" id="server-url" class="ms-TextField-field" placeholder="https://your-epm-server.com">
-            
-            <label class="ms-Label">Application Name</label>
-            <input type="text" id="application" class="ms-TextField-field" placeholder="e.g., CONFPLAN">
-            
-            <label class="ms-Label">Username</label>
-            <input type="text" id="username" class="ms-TextField-field" placeholder="username@example.com">
-            
-            <label class="ms-Label">Password</label>
-            <input type="password" id="password" class="ms-TextField-field" placeholder="Enter password">
-        </div>
-        <div id="tinyolap-fields" class="hidden">
-            <label class="ms-Label">Server URL</label>
-            <input type="text" id="tinyolap-server-url" class="ms-TextField-field" placeholder="https://your-tinyolap-server.com">
-            
-            <label class="ms-Label">Application Name</label>
-            <input type="text" id="tinyolap-application" class="ms-TextField-field" placeholder="e.g., CONFPLAN">
-        </div>
-        <div class="ms-form-group">
-            <button id="save-settings" class="ms-Button ms-Button--primary">
-                <span class="ms-Button-label">Save Settings</span>
-            </button>
-        </div>
-        <div id="settings-status" class="ms-MessageBar ms-MessageBar--success hidden">
-            <span class="ms-MessageBar-text">Settings saved successfully!</span>
-        </div>
-        <p><label id="item-subject"></label></p>
-        <button id="refresh-data" class="ms-Button ms-Button--primary">
-            <span class="ms-Button-label">Refresh Selected Data</span>
-        </button>
-        <button id="refresh-auto" class="ms-Button ms-Button--primary">
-            <span class="ms-Button-label">Refresh Automatically</span>
-        </button>
     </main>
-    <script>
+    <!-- <script>
   document.getElementById("refresh-auto").addEventListener("click", async () => {
     try {
       const result = await refresh_auto("main");
@@ -82,7 +90,7 @@
       console.error("Error calling refresh_auto:", error);
     }
   });
-</script>
+</script> -->
 </body>
 
 </html>

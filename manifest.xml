@@ -80,7 +80,7 @@
                   </Action>
                 </Control>
                 <!-- Existing Refresh Data button -->
-                <Control xsi:type="Button" id="RefreshDataButton">
+                <!-- <Control xsi:type="Button" id="RefreshDataButton">
                   <Label resid="RefreshData.Label"/>
                   <Supertip>
                     <Title resid="RefreshData.Label"/>
@@ -94,9 +94,9 @@
                   <Action xsi:type="ExecuteFunction">
                     <FunctionName>refreshData</FunctionName>
                   </Action>
-                </Control>
+                </Control> -->
                 <!-- Add Refresh Automatically button -->
-                <Control xsi:type="Button" id="RefreshAutoButton">
+                <!-- <Control xsi:type="Button" id="RefreshAutoButton">
                   <Label resid="RefreshAuto.Label"/>
                   <Supertip>
                     <Title resid="RefreshAuto.Label"/>
@@ -110,7 +110,7 @@
                   <Action xsi:type="ExecuteFunction">
                     <FunctionName>refresh_auto</FunctionName>
                   </Action>
-                </Control>
+                </Control> -->
               </Group>
               <Label resid="JIRPortal.Tab.Label"/>
             </CustomTab>
@@ -121,9 +121,9 @@
     <Resources>
       <bt:Images>
         <!-- Add refresh icon resources -->
-        <bt:Image id="Refresh.16x16" DefaultValue="https://localhost:3000/assets/refresh-16.png"/>
+        <!-- <bt:Image id="Refresh.16x16" DefaultValue="https://localhost:3000/assets/refresh-16.png"/>
         <bt:Image id="Refresh.32x32" DefaultValue="https://localhost:3000/assets/refresh-32.png"/>
-        <bt:Image id="Refresh.80x80" DefaultValue="https://localhost:3000/assets/refresh-80.png"/>
+        <bt:Image id="Refresh.80x80" DefaultValue="https://localhost:3000/assets/refresh-80.png"/> -->
         <bt:Image id="Icon.16x16" DefaultValue="https://localhost:3000/assets/icon-16.png"/>
         <bt:Image id="Icon.32x32" DefaultValue="https://localhost:3000/assets/icon-32.png"/>
         <bt:Image id="Icon.80x80" DefaultValue="https://localhost:3000/assets/icon-80.png"/>
@@ -138,20 +138,20 @@
       <bt:ShortStrings>
         <!-- Add new string resources -->
         <bt:String id="Functions.Namespace" DefaultValue="JIRVIEW"/>
-        <bt:String id="GetStarted.Title" DefaultValue="Get started with your sample add-in!"/>
+        <bt:String id="GetStarted.Title" DefaultValue="Get started with JIRView add-in!"/>
         <bt:String id="CommandsGroup.Label" DefaultValue="Commands Group"/>
         <bt:String id="TaskpaneButton.Label" DefaultValue="Show Task Pane"/>
         <bt:String id="JIRPortal.Tab.Label" DefaultValue="JIRView"/>
         <bt:String id="JIRPortal.Group.Label" DefaultValue="Data Operations"/>
-        <bt:String id="RefreshData.Label" DefaultValue="Refresh Data"/>
-        <bt:String id="RefreshAuto.Label" DefaultValue="Refresh Automatically"/>
+        <!-- <bt:String id="RefreshData.Label" DefaultValue="Refresh Data"/>
+        <bt:String id="RefreshAuto.Label" DefaultValue="Refresh Automatically"/> -->
       </bt:ShortStrings>
       <bt:LongStrings>
         <!-- Add new tooltip -->
         <bt:String id="GetStarted.Description" DefaultValue="JIRView add-in loaded successfully. Go to the JIRView tab and click the 'Show Task Pane' button to get started."/>
         <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Click to Show a Task Pane"/>
-        <bt:String id="RefreshData.Tooltip" DefaultValue="Refresh data from the selected range"/>
-        <bt:String id="RefreshAuto.Tooltip" DefaultValue="Automatically refresh data by detecting the range and metadata"/>
+        <!-- <bt:String id="RefreshData.Tooltip" DefaultValue="Refresh data from the selected range"/>
+        <bt:String id="RefreshAuto.Tooltip" DefaultValue="Automatically refresh data by detecting the range and metadata"/> -->
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>

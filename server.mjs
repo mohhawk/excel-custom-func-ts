@@ -72,18 +72,29 @@ app.post('/api/exportDataSlice', async (req, res) => {
     console.log('Request headers:', fetchOptions.headers);
 
     const response = await fetch(url, fetchOptions);
+    const responseBody = await response.text();
 
     if (!response.ok) {
-      const errorText = await response.text();
       console.error('Response:', {
         status: response.status,
-        text: errorText
+        text: responseBody
       });
-      throw new Error(`HTTP error! status: ${response.status}`);
+      try {
+        const errorJson = JSON.parse(responseBody);
+        res.status(response.status).json(errorJson);
+      } catch (e) {
+        res.status(response.status).json({ message: responseBody });
+      }
+      return;
     }
 
-    const data = await response.json();
-    res.json(data);
+    try {
+      const data = JSON.parse(responseBody);
+      res.json(data);
+    } catch (error) {
+      console.error('Error parsing JSON:', error);
+      res.status(500).json({ error: 'Invalid JSON response from server' });
+    }
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ error: error.message });

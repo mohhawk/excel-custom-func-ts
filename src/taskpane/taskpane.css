@@ -3,110 +3,177 @@
  * See LICENSE in the project root for license information.
  */
 
- html,
- body {
-     width: 100%;
-     height: 100%;
-     margin: 0;
-     padding: 0;
- }
- 
- ul {
-     margin: 0;
-     padding: 0;
- }
- 
- .ms-welcome__header {
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+.ms-welcome__header {
+    background-color: #fff;
+    padding: 30px 20px;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -ms-flex-align: center;
+    align-items: center;
+    border-bottom: 1px solid #e1e1e1;
+}
+
+.ms-welcome__header h1 {
+    white-space: normal;
+    text-align: center;
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    color: #333;
+    margin-top: 15px;
+}
+
+.logo-container {
+    margin-bottom: 10px;
+}
+
+.ms-welcome__main {
     padding: 20px;
-    padding-bottom: 30px;
-    padding-top: 100px;
-    display: table;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.form-container {
     width: 100%;
     margin: 0 auto;
- }
-
- .ms-welcome__main {
-    display: flex;
-    -webkit-flex-direction: column;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    width: 100%;
-    padding: 10px 20px;
- }
- 
- .ms-welcome__main > h2 {
-     width: 100%;
-     margin: 0 auto;
- }
- 
- .ms-welcome__features {
-     list-style-type: none;
-     margin-top: 20px;
- }
- 
- .ms-welcome__features.ms-List .ms-ListItem {
-     padding-bottom: 20px;
-     display: -webkit-flex;
-     display: flex;
- }
- 
- .ms-welcome__features.ms-List .ms-ListItem > .ms-Icon {
-     margin-right: 10px;
- }
- 
- .ms-welcome__action.ms-Button--hero {
-     margin-top: 30px;
- }
- 
-.ms-Button.ms-Button--hero .ms-Button-label {
-  color: #0078d7;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-sizing: border-box;
 }
 
-.ms-Button.ms-Button--hero:hover .ms-Button-label,
-.ms-Button.ms-Button--hero:focus .ms-Button-label{
-  color: #005a9e;
-  cursor: pointer;
-}
-
-b {
-    font-weight: bold;
-}
-
-.ms-form-group {
-    padding: 20px;
+.form-container h2 {
+    font-size: 1.3rem;
     margin-bottom: 20px;
-    display: flex;
-    -webkit-flex-direction: column;
-    -ms-flex-direction: column;
-    flex-direction: column;
+    color: #333;
+    text-align: center;
 }
 
-.ms-form-group label {
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+}
+
+.connection-type-selector {
+    display: -ms-grid;
+    display: grid;
+    -ms-grid-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.connection-type-btn {
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.3s ease;
+}
+
+.connection-type-btn:hover {
+    background-color: #e9ecef;
+}
+
+.connection-type-btn.active {
+    border-color: #0078d4;
+    background-color: #eaf3fb;
+    box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.3);
+}
+
+.connection-type-btn h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 5px 0;
+}
+
+.connection-type-btn p {
+    font-size: 0.875rem;
+    color: #666;
+    margin: 0;
 }
 
 .ms-TextField-field {
     width: 100%;
-    padding: 8px;
-    margin-bottom: 15px;
+    padding: 12px;
     border: 1px solid #ccc;
-    border-radius: 2px;
+    border-radius: 4px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+.ms-TextField-field:focus {
+    border-color: #0078d4;
+    outline: none;
+}
+
+.ms-Button {
+    width: 100%;
+    padding: 12px;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.ms-Button--primary {
+    background-color: #0078d4;
+    color: #fff;
+    border: none;
+}
+
+.ms-Button--primary:hover {
+    background-color: #005a9e;
+}
+
+.hidden {
+    display: none;
 }
 
 #settings-status {
-    display: none;
+    margin-top: 20px;
+    padding: 12px;
+    border-radius: 4px;
 }
 
 .ms-MessageBar--success {
     background-color: #dff6dd;
     border: 1px solid #9ad29a;
+    color: #3c763d;
 }
 
-#app-body {
-    display: none;
-}
+@media (max-width: 768px) {
+    .form-container {
+        padding: 20px;
+    }
 
-.hidden {
-    display: none;
+    .connection-type-selector {
+        -ms-grid-columns: 1fr;
+        grid-template-columns: 1fr;
+    }
 }
