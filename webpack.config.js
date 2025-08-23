@@ -4,6 +4,7 @@ const devCerts = require("office-addin-dev-certs");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const CustomFunctionsMetadataPlugin = require("custom-functions-metadata-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const WebpackObfuscator = require("webpack-obfuscator");
 const path = require("path");
 
 const urlDev = "https://localhost:3000/";
@@ -34,6 +35,9 @@ module.exports = async (env, options) => {
     },
     output: {
       clean: true,
+    },
+    optimization: {
+      minimize: dev ? false : true,
     },
     resolve: {
       extensions: [".ts", ".html", ".js"],
@@ -106,6 +110,17 @@ module.exports = async (env, options) => {
       port: process.env.npm_package_config_dev_server_port || 3000,
     },
   };
+
+  if (!dev) {
+    config.plugins.push(
+      new WebpackObfuscator(
+        {
+          rotateStringArray: true,
+        },
+        []
+      )
+    );
+  }
 
   return config;
 };

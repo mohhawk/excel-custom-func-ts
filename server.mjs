@@ -3,10 +3,23 @@ import cors from 'cors';
 import { Buffer } from 'buffer';
 import fetch from 'node-fetch';
 import dotenv from 'dotenv';
+import rateLimit from 'express-rate-limit';
 
 dotenv.config();
 
 const app = express();
+
+// Add rate limiting
+const limiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  message: 'Too many requests from this IP, please try again after 1 minute',
+});
+
+// Apply the rate limiting middleware to API calls only
+app.use('/api', limiter);
 
 // Configure CORS to allow requests from Excel add-in origins
 const corsOptions = {
@@ -38,9 +51,23 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 
-app.post('/api/exportDataSlice', async (req, res) => {
+// Centralized error handler middleware
+const errorHandler = (err, req, res, next) => {
+  console.error('An unexpected error occurred:', err);
+  if (res.headersSent) {
+    return next(err);
+  }
+  res.status(500).json({ error: 'An internal server error occurred.' });
+};
+
+app.post('/api/exportDataSlice', async (req, res, next) => {
   try {
     const { cubeName, payload, settings } = req.body;
+
+    if (!cubeName || !payload || !settings) {
+      return res.status(400).json({ message: 'Missing required parameters: cubeName, payload, or settings.' });
+    }
+
     let url;
 
     if (settings.connectionType === 'hyperion') {
@@ -100,6 +127,9 @@ app.post('/api/exportDataSlice', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// Use the centralized error handler
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
