@@ -4,6 +4,8 @@ import { Buffer } from 'buffer';
 import fetch from 'node-fetch';
 import dotenv from 'dotenv';
 import rateLimit from 'express-rate-limit';
+import fs from 'fs';
+import path from 'path';
 
 dotenv.config();
 
@@ -126,6 +128,27 @@ app.post('/api/exportDataSlice', async (req, res, next) => {
     console.error('Error:', error);
     res.status(500).json({ error: error.message });
   }
+});
+
+app.post('/api/saveReport', (req, res) => {
+    const report = req.body;
+    const reportDir = path.join(__dirname, 'reports');
+
+    if (!fs.existsSync(reportDir)) {
+        fs.mkdirSync(reportDir);
+    }
+
+    const fileName = `${report.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_v${report.version}.json`;
+    const filePath = path.join(reportDir, fileName);
+
+    fs.writeFile(filePath, JSON.stringify(report, null, 2), (err) => {
+        if (err) {
+            console.error('Error saving report:', err);
+            return res.status(500).json({ message: 'Failed to save report' });
+        }
+        console.log(`Report saved to ${filePath}`);
+        res.status(200).json({ message: 'Report saved successfully' });
+    });
 });
 
 // Use the centralized error handler

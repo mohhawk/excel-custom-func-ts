@@ -40,3 +40,22 @@ export async function exportDataSlice(cubeName: string, payload: any): Promise<a
 
   return response.json();
 }
+
+export async function saveReport(report: any): Promise<any> {
+    const url = getApiUrl('/api/saveReport');
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(report),
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to save report: ${errorText}`);
+    }
+
+    return response.json();
+}

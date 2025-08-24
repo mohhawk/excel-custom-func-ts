@@ -82,6 +82,10 @@ module.exports = async (env, options) => {
             to: "assets/[name][ext][query]",
           },
           {
+            from: "src/taskpane/taskpane.css",
+            to: "[name][ext]",
+          },
+          {
             from: "assets/icon-16.png",
             to: "favicon.ico",
           },

@@ -112,6 +112,44 @@
                   </Action>
                 </Control> -->
               </Group>
+              <Group id="JIRPortal.ReportsGroup">
+                <Label resid="JIRPortal.ReportsGroup.Label"/>
+                <Icon>
+                  <bt:Image size="16" resid="Icon.16x16"/>
+                  <bt:Image size="32" resid="Icon.32x32"/>
+                  <bt:Image size="80" resid="Icon.80x80"/>
+                </Icon>
+                <Control xsi:type="Button" id="ExportReportButton">
+                  <Label resid="ExportReportButton.Label"/>
+                  <Supertip>
+                    <Title resid="ExportReportButton.Label"/>
+                    <Description resid="ExportReportButton.Tooltip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16x16"/>
+                    <bt:Image size="32" resid="Icon.32x32"/>
+                    <bt:Image size="80" resid="Icon.80x80"/>
+                  </Icon>
+                  <Action xsi:type="ExecuteFunction">
+                    <FunctionName>showExportReportDialog</FunctionName>
+                  </Action>
+                </Control>
+                <Control xsi:type="Button" id="ImportReportButton">
+                  <Label resid="ImportReportButton.Label"/>
+                  <Supertip>
+                    <Title resid="ImportReportButton.Label"/>
+                    <Description resid="ImportReportButton.Tooltip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16x16"/>
+                    <bt:Image size="32" resid="Icon.32x32"/>
+                    <bt:Image size="80" resid="Icon.80x80"/>
+                  </Icon>
+                  <Action xsi:type="ExecuteFunction">
+                    <FunctionName>showImportReportDialog</FunctionName>
+                  </Action>
+                </Control>
+              </Group>
               <Label resid="JIRPortal.Tab.Label"/>
             </CustomTab>
           </ExtensionPoint>
@@ -143,6 +181,9 @@
         <bt:String id="TaskpaneButton.Label" DefaultValue="Show Task Pane"/>
         <bt:String id="JIRPortal.Tab.Label" DefaultValue="JIRView"/>
         <bt:String id="JIRPortal.Group.Label" DefaultValue="Data Operations"/>
+        <bt:String id="JIRPortal.ReportsGroup.Label" DefaultValue="Reports"/>
+        <bt:String id="ExportReportButton.Label" DefaultValue="Export Report"/>
+        <bt:String id="ImportReportButton.Label" DefaultValue="Import Report"/>
         <!-- <bt:String id="RefreshData.Label" DefaultValue="Refresh Data"/>
         <bt:String id="RefreshAuto.Label" DefaultValue="Refresh Automatically"/> -->
       </bt:ShortStrings>
@@ -150,6 +191,8 @@
         <!-- Add new tooltip -->
         <bt:String id="GetStarted.Description" DefaultValue="JIRView add-in loaded successfully. Go to the JIRView tab and click the 'Show Task Pane' button to get started."/>
         <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Click to Show a Task Pane"/>
+        <bt:String id="ExportReportButton.Tooltip" DefaultValue="Export the current sheet as a report."/>
+        <bt:String id="ImportReportButton.Tooltip" DefaultValue="Import a report into the current sheet."/>
         <!-- <bt:String id="RefreshData.Tooltip" DefaultValue="Refresh data from the selected range"/>
         <bt:String id="RefreshAuto.Tooltip" DefaultValue="Automatically refresh data by detecting the range and metadata"/> -->
       </bt:LongStrings>
